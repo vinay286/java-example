@@ -26,11 +26,14 @@ pipeline {
 
         stage('Verify Build Output') {
             steps {
-                // Verify if the WAR file has been successfully created
+                // Verify if a WAR file has been successfully created
                 sh 'ls -la target/'
                 script {
-                    if (!fileExists('target/java-example.war')) {
-                        error "WAR file not found in target directory"
+                    def warFiles = findFiles(glob: 'target/*.war')
+                    if (warFiles.length == 0) {
+                        error "No WAR file found in target directory"
+                    } else {
+                        echo "WAR file found: ${warFiles[0].path}"
                     }
                 }
             }
@@ -53,7 +56,7 @@ pipeline {
                         serverId: ARTIFACTORY_SERVER,
                         spec: '''{
                             "files": [{
-                                "pattern": "target/java-example.war",
+                                "pattern": "target/*.war", // Upload any WAR file in the target directory
                                 "target": "maven-releases/java-example/"
                             }]
                         }'''
@@ -67,7 +70,8 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'artifactory-credentials', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PASS')]) {
                     // Deploy the WAR file to Apache Tomcat server using credentials from Jenkins store
                     sh """
-                        curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_PASS} --upload-file target/java-example.war \
+                        war_file=\$(ls target/*.war)
+                        curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_PASS} --upload-file \$war_file \
                         "http://3.87.224.227:8081/artifactory/maven-releases/java-example"
                     """
                 }
