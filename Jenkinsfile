@@ -53,7 +53,7 @@ pipeline {
                         serverId: ARTIFACTORY_SERVER,
                         spec: '''{
                             "files": [{
-                                "pattern": "target/works-with-heroku-1.0.war",
+                                "pattern": "target/*.war",
                                 "target": "maven-releases/works-with-heroku/"
                             }]
                         }'''
@@ -67,7 +67,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'artifactory-credentials', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PASS')]) {
                     // Deploy the WAR file to Apache Tomcat server using credentials from Jenkins store
                     sh """
-                        curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_PASS} --upload-file target/works-with-heroku-1.0.war \
+                        curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_PASS} --upload-file target/*.war \
                         "http://3.87.224.227:8081/artifactory/maven-releases/works-with-heroku/"
                     """
                 }
