@@ -1,89 +1,92 @@
-pipeline {
-    agent { label 'dev' } // Specify the label of your Jenkins Slave. Modify 'dev' if you use a different label.
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>works.buddy.samples</groupId>
+    <artifactId>works-with-heroku</artifactId>
+    <version>1.0</version>
+    <packaging>war</packaging>
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <sonar.coverage.jacoco.xmlReportPaths>${basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId> <!-- Updated to javax.servlet-api -->
+            <version>4.0.1</version> <!-- Updated version -->
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version> <!-- Updated version -->
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId> <!-- Updated artifactId -->
+            <version>3.11.2</version> <!-- Updated version -->
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-    environment {
-        MAVEN_HOME = tool name: 'Maven' // Ensure 'Maven' matches the name in Jenkins tool configuration.
-        SONARQUBE_SERVER = 'sonar' // Define the SonarQube server ID.
-        SONAR_SCANNER_HOME = tool name: 'SonarScanner' // Ensure 'SonarScanner' matches the name in Jenkins tool configuration.
-        ARTIFACTORY_SERVER = 'Artifactory' // Define Artifactory server ID.
-        SONAR_TOKEN = 'squ_485c5e56e285bf09f85abbd83cb9ac6d4c73f329' // SonarQube token
-    }
-
-    stages {
-        stage('Checkout') {
-            steps {
-                // Checkout the source code from your repository
-                git url: 'https://github.com/shashank1553/java-example.git', branch: 'master'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                // Build the Maven project
-                sh "${MAVEN_HOME}/bin/mvn clean install"
-            }
-        }
-
-        stage('Verify Build Output') {
-            steps {
-                // Verify if the WAR file has been successfully created
-                sh 'ls -la target/'
-                script {
-                    if (!fileExists('target/java-example.war')) {
-                        error "WAR file not found in target directory"
-                    }
-                }
-            }
-        }
-
-        stage('SonarQube Analysis') {
-            steps {
-                // Run SonarQube analysis
-                withSonarQubeEnv(SONARQUBE_SERVER) {
-                    sh "${MAVEN_HOME}/bin/mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
-                }
-            }
-        }
-
-        stage('Deploy to Artifactory') {
-            steps {
-                script {
-                    // Upload artifacts to JFrog Artifactory
-                    rtUpload (
-                        serverId: ARTIFACTORY_SERVER,
-                        spec: '''{
-                            "files": [{
-                                "pattern": "target/java-example.war",
-                                "target": "maven-releases/java-example/"
-                            }]
-                        }'''
-                    )
-                }
-            }
-        }
-
-        stage('Deploy to Tomcat') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'artifactory-credentials', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PASS')]) {
-                    // Deploy the WAR file to Apache Tomcat server using credentials from Jenkins store
-                    sh """
-                        curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_PASS} --upload-file target/java-example.war \
-                        "http://3.87.224.227:8081/artifactory/maven-releases/java-example"
-                    """
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-            cleanWs() // Clean the workspace after the build
-        }
-        success {
-            echo "Build, Analysis, and Deployment succeeded!"
-        }
-        failure {
-            echo "Build failed. Check the logs!"
-        }
-    }
-}
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.3.0</version> <!-- Updated version -->
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>copy</goal></goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.eclipse.jetty</groupId>
+                                    <artifactId>jetty-runner</artifactId>
+                                    <version>9.4.48.v20220622</version> <!-- Updated version -->
+                                    <destFileName>jetty-runner.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.github.robb3n</groupId>
+                <artifactId>sonar-quality-gate-maven-plugin</artifactId>
+                <version>1.4.0</version> <!-- Updated version -->
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.8</version> <!-- Version is fine -->
+                <configuration>
+                    <destFile>${basedir}/target/jacoco.exec</destFile>
+                    <dataFile>${basedir}/target/jacoco.exec</dataFile>
+                    <output>file</output>
+                    <append>true</append>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <phase>test-compile</phase>
+                    </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>prepare-package</phase> <!-- Changed to a more appropriate phase -->
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
