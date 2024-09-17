@@ -41,8 +41,8 @@ pipeline {
                         serverId: ARTIFACTORY_SERVER,
                         spec: '''{
                             "files": [{
-                                "pattern": "target/works-with-heroku-1.0.war", // Path to the artifact to upload
-                                "target": "maven-releases/works-with-heroku/" // Target repository path in Artifactory
+                                "pattern": "target/works-with-heroku-1.0.war",
+                                "target": "maven-releases/works-with-heroku/"
                             }]
                         }'''
                     )
