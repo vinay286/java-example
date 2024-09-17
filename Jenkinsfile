@@ -13,7 +13,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the source code from your repository
-                git url: 'https://github.com/shashank1553/java-example.git', branch: 'main'
+                git url: 'https://github.com/shashank1553/java-example.git', branch: 'master'
             }
         }
 
