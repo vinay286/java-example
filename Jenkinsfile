@@ -6,7 +6,7 @@ pipeline {
         SONARQUBE_SERVER = 'sonar' // Define the SonarQube server ID.
         SONAR_SCANNER_HOME = tool name: 'SonarScanner' // Ensure 'SonarScanner' matches the name in Jenkins tool configuration.
         ARTIFACTORY_SERVER = 'Artifactory' // Define Artifactory server ID.
-        SONAR_TOKEN = credentials('sonar-token-id') // Use Jenkins credentials for SonarQube token
+        SONAR_TOKEN = 'squ_485c5e56e285bf09f85abbd83cb9ac6d4c73f329' // SonarQube token
     }
 
     stages {
@@ -24,18 +24,6 @@ pipeline {
             }
         }
 
-        stage('Verify Build Output') {
-            steps {
-                // Verify if the WAR file has been successfully created
-                sh 'ls -la target/'
-                script {
-                    if (!fileExists('target/works-with-heroku-1.0.war')) {
-                        error "WAR file not found in target directory"
-                    }
-                }
-            }
-        }
-
         stage('SonarQube Analysis') {
             steps {
                 // Run SonarQube analysis
@@ -49,15 +37,14 @@ pipeline {
             steps {
                 script {
                     // Upload artifacts to JFrog Artifactory
-                    def uploadSpec = '''{
-                        "files": [{
-                            "pattern": "target/works-with-heroku-1.0.war",
-                            "target": "maven-releases/works-with-heroku/"
-                        }]
-                    }'''
-                    rtUpload(
+                    rtUpload (
                         serverId: ARTIFACTORY_SERVER,
-                        spec: uploadSpec
+                        spec: '''{
+                            "files": [{
+                                "pattern": "target/works-with-heroku-1.0.war", // Path to the artifact to upload
+                                "target": "maven-releases/works-with-heroku/" // Target repository path in Artifactory
+                            }]
+                        }'''
                     )
                 }
             }
@@ -65,11 +52,10 @@ pipeline {
 
         stage('Deploy to Tomcat') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'artifactory-credentials', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PASS')]) {
-                    // Deploy the WAR file to Apache Tomcat server using credentials from Jenkins store
+                script {
+                    // Deploy the WAR file to Apache Tomcat server
                     sh """
-                        curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_PASS} --upload-file target/works-with-heroku-1.0.war \
-                        "http://3.87.224.227:8081/artifactory/maven-releases/works-with-heroku/works-with-heroku-1.0.war"
+                        curl -u admin:Admin12345 --upload-file target/works-with-heroku-1.0.war "http://3.87.224.227:8081/artifactory/maven-releases/works-with-heroku/works-with-heroku-1.0.war"
                     """
                 }
             }
