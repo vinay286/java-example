@@ -5,7 +5,7 @@ pipeline {
         MAVEN_HOME = tool name: 'Maven' // Ensure 'Maven' matches the name in Jenkins tool configuration.
         SONARQUBE_SERVER = 'sonar' // Define the SonarQube server ID.
         SONAR_SCANNER_HOME = tool name: 'SonarScanner' // Ensure 'SonarScanner' matches the name in Jenkins tool configuration.
-        ARTIFACTORY_SERVER = 'JFrog' // Define Artifactory server ID.
+        ARTIFACTORY_SERVER = 'Artifactory' // Define Artifactory server ID.
         SONAR_TOKEN = 'squ_485c5e56e285bf09f85abbd83cb9ac6d4c73f329' // SonarQube token
     }
 
