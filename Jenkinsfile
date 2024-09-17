@@ -55,7 +55,7 @@ pipeline {
                 script {
                     // Deploy the WAR file to Apache Tomcat server
                     sh """
-                        curl -u admin:Admin12345 --upload-file target/onlinebookstore.war "http://3.87.224.227:8081/artifactory/maven-releases/java-example"
+                        curl -u admin:Admin12345 --upload-file target/java-example.war "http://localhost:8080/manager/text/deploy?path=/java-example&update=true"
                     """
                 }
             }
