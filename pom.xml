@@ -14,20 +14,20 @@
     <dependencies>
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId> <!-- Updated to javax.servlet-api -->
-            <version>4.0.1</version> <!-- Updated version -->
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.2</version> <!-- Updated version -->
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId> <!-- Updated artifactId -->
-            <version>3.11.2</version> <!-- Updated version -->
+            <artifactId>mockito-core</artifactId>
+            <version>3.11.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -37,7 +37,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.3.0</version> <!-- Updated version -->
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -47,7 +47,7 @@
                                 <artifactItem>
                                     <groupId>org.eclipse.jetty</groupId>
                                     <artifactId>jetty-runner</artifactId>
-                                    <version>9.4.48.v20220622</version> <!-- Updated version -->
+                                    <version>9.4.48.v20220622</version>
                                     <destFileName>jetty-runner.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
@@ -58,12 +58,12 @@
             <plugin>
                 <groupId>io.github.robb3n</groupId>
                 <artifactId>sonar-quality-gate-maven-plugin</artifactId>
-                <version>1.4.0</version> <!-- Updated version -->
+                <version>1.4.0</version>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.8</version> <!-- Version is fine -->
+                <version>0.8.8</version>
                 <configuration>
                     <destFile>${basedir}/target/jacoco.exec</destFile>
                     <dataFile>${basedir}/target/jacoco.exec</dataFile>
@@ -80,7 +80,7 @@
                     </execution>
                     <execution>
                         <id>jacoco-site</id>
-                        <phase>prepare-package</phase> <!-- Changed to a more appropriate phase -->
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
