@@ -41,7 +41,7 @@ pipeline {
                         serverId: 'Artifactory',
                         spec: '''{
                             "files": [{
-                                "pattern": "target/works-with-heroku-1.0.war",
+                                "pattern": "*.war",
                                 "target": "maven-releases/works-with-heroku/"
                             }]
                         }'''
