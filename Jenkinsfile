@@ -38,18 +38,16 @@ pipeline {
                 script {
                     // Upload artifacts to JFrog Artifactory
                     rtUpload (
-                        serverId: ARTIFACTORY_SERVER,
+                        serverId: 'ARTIFACTORY_SERVER',
                         spec: '''{
                             "files": [{
-                                "pattern": "target/*.war",
-                                "target": "maven-releases/"
+                                "pattern": "target/works-with-heroku-1.0.war",
+                                "target": "maven-releases/works-with-heroku/"
                             }]
                         }'''
                     )
                 }
             }
-        }
-
         }
     }
 
