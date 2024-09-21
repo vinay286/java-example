@@ -55,7 +55,9 @@ pipeline {
                 script {
                     // Deploy the WAR file to Apache Tomcat server
                     sh """
-                        curl -u admin:Admin12345 "http://184.73.144.199:8081/artifactory/maven-releases/works-with-heroku/works-with-heroku-1.0.war" | curl -u admin:123456 --uploadfile - "http://98.81.160.3:8080/manager/"
+                        curl -u admin:Admin12345 "http://184.73.144.199:8081/artifactory/maven-releases/works-with-heroku/works-with-heroku-1.0.war" | \
+                        curl -u admin:123456 --upload-file - "http://98.81.160.3:8080/manager/"
+
                     """
                 }
             }
