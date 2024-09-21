@@ -41,11 +41,22 @@ pipeline {
                         serverId: 'Artifactory',
                         spec: '''{
                             "files": [{
-                                "pattern": "*.war",
+                                "pattern": "target/works-with-heroku-1.0.war",
                                 "target": "maven-releases/works-with-heroku/"
                             }]
                         }'''
                     )
+                }
+            }
+        }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                script {
+                    // Deploy the WAR file to Apache Tomcat server
+                    sh """
+                        curl -u admin:Admin12345 --upload-file target/works-with-heroku-1.0.war "http://3.87.224.227:8081/artifactory/maven-releases/works-with-heroku/works-with-heroku-1.0.war"
+                    """
                 }
             }
         }
