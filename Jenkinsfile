@@ -38,7 +38,7 @@ pipeline {
                 script {
                     // Upload artifacts to JFrog Artifactory
                     rtUpload (
-                        serverId: 'ARTIFACTORY_SERVER',
+                        serverId: 'Artifactory',
                         spec: '''{
                             "files": [{
                                 "pattern": "target/works-with-heroku-1.0.war",
