@@ -42,7 +42,7 @@ pipeline {
                         spec: '''{
                             "files": [{
                                 "pattern": "target/works-with-heroku-1.0.war",
-                                "target": "maven-releases/works-with-heroku/"
+                                "target": "maven-release/works-with-heroku/"
                             }]
                         }'''
                     )
@@ -55,7 +55,7 @@ pipeline {
                 script {
                     // Deploy the WAR file to Apache Tomcat server
                     sh """
-                       curl -u admin:vinaythanu "http://43.205.233.3:8081/artifactory/maven-releases/works-with-heroku/works-with-heroku-1.0.war" | \
+                       curl -u admin:vinaythanu "http://43.205.233.3:8081/artifactory/maven-release/works-with-heroku/works-with-heroku-1.0.war" | \
                        curl -u admin:123456 -X PUT "http://172.31.39.220:8080/manager/text/deploy?path=/works-with-heroku&update=true" --upload-file -
 
 
