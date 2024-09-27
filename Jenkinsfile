@@ -5,7 +5,7 @@ pipeline {
         MAVEN_HOME = tool name: 'Maven' // Ensure 'Maven' matches the name in Jenkins tool configuration.
         SONARQUBE_SERVER = 'sonar' // Define the SonarQube server ID.
         SONAR_SCANNER_HOME = tool name: 'sonar' // Ensure 'SonarScanner' matches the name in Jenkins tool configuration.
-        ARTIFACTORY_SERVER = 'jfrog' // Define Artifactory server ID.
+        ARTIFACTORY_SERVER = 'Artifactory' // Define Artifactory server ID.
         SONAR_TOKEN = 'squ_2039e56bf656c969737d7acebf681049ef4f03e7' // SonarQube token
     }
 
@@ -38,7 +38,7 @@ pipeline {
                 script {
                     // Upload artifacts to JFrog Artifactory
                     rtUpload (
-                        serverId: 'jfrog',
+                        serverId: 'Artifactory',
                         spec: '''{
                             "files": [{
                                 "pattern": "target/works-with-heroku-1.0.war",
