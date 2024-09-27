@@ -4,16 +4,16 @@ pipeline {
     environment {
         MAVEN_HOME = tool name: 'Maven' // Ensure 'Maven' matches the name in Jenkins tool configuration.
         SONARQUBE_SERVER = 'sonar' // Define the SonarQube server ID.
-        SONAR_SCANNER_HOME = tool name: 'SonarScanner' // Ensure 'SonarScanner' matches the name in Jenkins tool configuration.
+        SONAR_SCANNER_HOME = tool name: 'sonar' // Ensure 'SonarScanner' matches the name in Jenkins tool configuration.
         ARTIFACTORY_SERVER = 'Artifactory' // Define Artifactory server ID.
-        SONAR_TOKEN = 'squ_485c5e56e285bf09f85abbd83cb9ac6d4c73f329' // SonarQube token
+        SONAR_TOKEN = 'sonar-token' // SonarQube token
     }
 
     stages {
         stage('Checkout') {
             steps {
                 // Checkout the source code from your repository
-                git url: 'https://github.com/shashank1553/java-example.git', branch: 'master'
+                git url: 'https://github.com/vinay286/java-example.git', branch: 'master'
             }
         }
 
@@ -55,8 +55,8 @@ pipeline {
                 script {
                     // Deploy the WAR file to Apache Tomcat server
                     sh """
-                       curl -u admin:Admin12345 "http://184.73.144.199:8081/artifactory/maven-releases/works-with-heroku/works-with-heroku-1.0.war" | \
-                       curl -u admin:123456 -X PUT "http://98.81.160.3:8080/manager/text/deploy?path=/works-with-heroku&update=true" --upload-file -
+                       curl -u admin:vinaythanu "http://43.205.233.3:8081/artifactory/maven-releases/works-with-heroku/works-with-heroku-1.0.war" | \
+                       curl -u admin:123456 -X PUT "http://172.31.39.220:8080/manager/text/deploy?path=/works-with-heroku&update=true" --upload-file -
 
 
                     """
